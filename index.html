@@ -90,7 +90,7 @@ footer{text-align:center;padding:16px;color:var(--dim);font-size:11px;border-top
     <button class="pb" onclick="openTab()">&#x2197; New Tab</button>
     <button class="pb cl" onclick="closePlayer()">&#x2715; Close</button>
   </div></div>
-  <div class="pf" onclick="document.getElementById('gf').focus()"><iframe id="gf" allowfullscreen allow="keyboard-map;gamepad;autoplay;fullscreen" sandbox="allow-scripts allow-same-origin allow-popups allow-forms" tabindex="0"></iframe></div>
+  <div class="pf" onclick="document.getElementById('gf').focus()"><iframe id="gf" allowfullscreen allow="keyboard-map;gamepad;autoplay;fullscreen;storage-access" sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-modals" tabindex="0"></iframe></div>
   <div class="pkh">Click game to enable keyboard &#xB7; <kbd>Esc</kbd> close</div>
 </div>
 <footer>ArcadeVault &#xB7; HTML5 Games</footer>
@@ -104,21 +104,20 @@ var BASE="https://max1734601-cpu.github.io/";
 
 var GAMES=[
 {name:"Subway Surfers",emoji:"\ud83d\ude87",cat:"arcade",ctrl:"\u2190\u2192\u2191\u2193",pop:true,url:BASE+"SubwaySurfers/"},
-{name:"Monkey Mart",emoji:"\ud83d\udc12",cat:"idle",ctrl:"WASD",pop:true,url:BASE+"MonkeyMart/"},
+{name:"Monkey Mart",emoji:"\ud83d\udc12",cat:"idle",ctrl:"WASD",pop:true,save:true,url:BASE+"MonkeyMart/"},
 {name:"Slope",emoji:"\ud83d\udfe2",cat:"arcade",ctrl:"AD / \u2190\u2192",pop:true,url:BASE+"Slope-Game/"},
 {name:"Snow Rider 3D",emoji:"\ud83c\udfbf",cat:"arcade",ctrl:"AD / \u2190\u2192",pop:true,url:BASE+"Snow-Rider3D/"},
-{name:"Retro Bowl",emoji:"\ud83c\udfc8",cat:"sport",ctrl:"Click+Drag",pop:true,url:"https://ubg98.github.io/RetroBowl/"},
+{name:"Retro Bowl",emoji:"\ud83c\udfc8",cat:"sport",ctrl:"Click+Drag",pop:true,url:BASE+"MODDED_RETRO/"},
 {name:"Run 3",emoji:"\ud83c\udfc3",cat:"arcade",ctrl:"\u2190\u2192\u2191 Space",pop:true,url:BASE+"Run3/"},
-{name:"Geometry Dash",emoji:"\ud83d\udd37",cat:"arcade",ctrl:"Space/Click",pop:true,url:BASE+"GeometryDash/"},
-{name:"Drive Mad",emoji:"\ud83d\ude97",cat:"racing",ctrl:"\u2191\u2193",pop:true,url:"https://ubg77.github.io/game131022/drive-mad/"},
-{name:"Basketball Random",emoji:"\ud83c\udfc0",cat:"sport",ctrl:"W / \u2191",pop:true,url:BASE+"BasketRandom/"},
-{name:"Smash Karts",emoji:"\ud83c\udfce\ufe0f",cat:"action",ctrl:"WASD+Space",pop:true,url:"https://ubg44.github.io/SmashKarts/"},
+{name:"Geometry Dash Spam",emoji:"🔷",cat:"arcade",ctrl:"Space/Click",pop:true,url:"https://marblerun-3d.github.io/game/spacewave/"},
+{name:"Drive Mad",emoji:"\ud83d\ude97",cat:"racing",ctrl:"\u2191\u2193",pop:true,url:"https://cdn.hypackel.com/files/drive-mad/game/index.html"},
+{name:"Basketball Random",emoji:"\ud83c\udfc0",cat:"sport",ctrl:"W / \u2191",pop:true,url:"https://ubg98.github.io/BasketRandom/frame.html"},
 {name:"Rooftop Snipers",emoji:"\ud83c\udfaf",cat:"action",ctrl:"W/E I/O",pop:true,url:BASE+"RooftopSnipers/"},
 {name:"Idle Breakout",emoji:"\ud83d\udca5",cat:"puzzle",ctrl:"Click",pop:true,url:BASE+"IdleBreakout/"},
-{name:"Eggy Car",emoji:"\ud83e\udd5a",cat:"racing",ctrl:"\u2190\u2192",url:BASE+"EggyCar/"},
 {name:"Timber Guy",emoji:"\ud83e\ude93",cat:"arcade",ctrl:"\u2190\u2192",url:BASE+"TimberGuy/"},
 {name:"Solitaire",emoji:"\ud83c\udccf",cat:"puzzle",ctrl:"Click",url:BASE+"SolitaireClassic/"},
 {name:"2048",emoji:"\ud83d\udd22",cat:"puzzle",ctrl:"\u2190\u2192\u2191\u2193",url:BASE+"2048HexaMergeBlock/"},
+{name:"Survival Race",emoji:"\ud83c\udfc1",cat:"racing",ctrl:"WASD / \u2190\u2192\u2191",pop:true,url:"https://html5.gamemonetize.co/9km7avlf26r9se5gam8028uq4p6drmx1/"},
 {name:"Plinko",emoji:"\ud83d\udd34",cat:"casino",ctrl:"Click",pop:true,url:"PLINKO"},
 {name:"Blackjack",emoji:"\ud83c\udccf",cat:"casino",ctrl:"Click",pop:true,url:"BLACKJACK"}
 ];
@@ -168,17 +167,22 @@ function openGame(i){
   var frame=document.getElementById("gf");
   if(g.url==="PLINKO"){frame.src=decodeGame(P64);curUrl=""}
   else if(g.url==="BLACKJACK"){frame.src=decodeGame(B64);curUrl=""}
-  else{frame.src=g.url;curUrl=g.url}
+  else{if(g.save){frame.removeAttribute("sandbox")}else{frame.setAttribute("sandbox","allow-scripts allow-same-origin allow-popups allow-forms allow-modals")}frame.src=g.url;curUrl=g.url}
   document.getElementById("po").classList.add("on");
   scrollPos=window.scrollY;
   document.body.classList.add("noscroll");
   document.body.style.top=(-scrollPos)+"px";
   setTimeout(function(){frame.focus()},300);
+  if(window._saveInt)clearInterval(window._saveInt);
+  if(g.save){window._saveInt=setInterval(function(){try{var f=document.getElementById("gf");f.contentWindow.eval('if(typeof FS!=="undefined"){FS.syncfs(false,function(){})}')}catch(e){}},30000)}
 }
 
 function closePlayer(){
+  var f=document.getElementById("gf");
+  try{f.contentWindow.eval('if(typeof Module!=="undefined"&&Module.asmLibraryArg&&Module.asmLibraryArg._WS_Flush){Module.asmLibraryArg._WS_Flush()}if(typeof FS!=="undefined"){FS.syncfs(false,function(){})}')}catch(e){}
+  if(window._saveInt){clearInterval(window._saveInt);window._saveInt=null}
   document.getElementById("po").classList.remove("on");
-  document.getElementById("gf").src="about:blank";
+  f.src="about:blank";
   document.body.classList.remove("noscroll");
   document.body.style.top="";
   window.scrollTo(0,scrollPos);
