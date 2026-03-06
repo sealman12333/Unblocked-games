@@ -74,7 +74,7 @@ header{position:sticky;top:0;z-index:100;background:rgba(7,8,12,.88);backdrop-fi
 .pt-btn.close:active{background:rgba(255,71,87,.3)}
 .pt-btn.muted{opacity:.5}
 .pf{flex:1;background:#000;position:relative;overflow:hidden}
-.pf iframe{width:100%;height:100%;border:none;background:#000;touch-action:auto}
+.pf iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none;background:#000;touch-action:auto}
 .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--card);border:1px solid var(--bdr);color:var(--dim);font-size:11px;padding:8px 16px;border-radius:8px;opacity:0;transition:.3s;z-index:999;pointer-events:none;white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .so{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:none;place-items:center;padding:20px}
@@ -242,6 +242,7 @@ document.getElementById("gateInput").addEventListener("keydown",function(e){if(e
 <button class="pt-btn close" onclick="closePlayer()">&#x2715; Close</button>
 <span class="pt-name" id="ptitle"></span>
 <button class="pt-btn" id="muteBtn" onclick="toggleMute()">&#128264;</button>
+<button class="pt-btn" onclick="window.open(currentGameUrl,'_blank')">&#8599; Tab</button>
 <button class="pt-btn" onclick="goFS()">&#x26F6; Full</button>
 </div>
 <div class="pf"><iframe id="gf" allowfullscreen allow="keyboard-map;gamepad;autoplay;fullscreen;storage-access;pointer-lock;accelerometer;gyroscope" sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-modals allow-pointer-lock allow-downloads allow-storage-access-by-user-activation" tabindex="0"></iframe></div>
